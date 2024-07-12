@@ -6,7 +6,6 @@ package cmd
 import (
 	"fmt"
 	"log"
-
 	. "github.com/somebodyawesome-dev/awesome-ascii.git/ascii"
 	"github.com/spf13/cobra"
 )
