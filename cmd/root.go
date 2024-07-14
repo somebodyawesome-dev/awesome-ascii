@@ -1,14 +1,15 @@
-/*
-Copyright © 2024 NAME HERE <EMAIL ADDRESS>
-*/
 package cmd
 
 import (
 	"fmt"
+	"log"
 	"os"
 
+	. "github.com/somebodyawesome-dev/awesome-ascii.git/ascii"
 	"github.com/spf13/cobra"
 )
+
+var inputFile string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -19,7 +20,14 @@ var rootCmd = &cobra.Command{
 	// has an action associated with it:
 	Run: func(cmd *cobra.Command, args []string) {
 
-		fmt.Println("Hello world!")
+		newWidth := 200
+		asciiArt, err := ConvertImageToASCII(inputFile, newWidth)
+		if err != nil {
+			log.Fatalf("Error: %v", err)
+			os.Exit(1)
+		}
+
+		fmt.Println(asciiArt)
 	},
 }
 
@@ -42,4 +50,6 @@ func init() {
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	rootCmd.Flags().StringVarP(&inputFile, "input", "i", "", "An image path which will be converted to ASCII")
+	rootCmd.MarkFlagRequired("input")
 }
