@@ -29,6 +29,7 @@ var rootCmd = &cobra.Command{
 
 		fmt.Println(asciiArt)
 	},
+	Version: "0.0.1-alpha",
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
