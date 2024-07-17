@@ -6,6 +6,7 @@ import (
 	"os"
 
 	. "github.com/somebodyawesome-dev/awesome-ascii.git/ascii"
+	"github.com/somebodyawesome-dev/awesome-ascii.git/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -19,9 +20,12 @@ var rootCmd = &cobra.Command{
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	Run: func(cmd *cobra.Command, args []string) {
+		termSize,err:=utils.GetTerminalSize();if err != nil{
 
-		newWidth := 200
-		asciiArt, err := ConvertImageToASCII(inputFile, newWidth)
+			log.Fatalf("Error: %v", err)
+			os.Exit(1)
+		}
+		asciiArt, err := ConvertImageToASCII(inputFile, int(termSize.Col))
 		if err != nil {
 			log.Fatalf("Error: %v", err)
 			os.Exit(1)
@@ -50,7 +54,6 @@ func init() {
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	rootCmd.Flags().StringVarP(&inputFile, "input", "i", "", "An image path which will be converted to ASCII")
 	rootCmd.MarkFlagRequired("input")
 }

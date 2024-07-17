@@ -11,7 +11,7 @@ import (
 	"unsafe"
 )
 
-func getTerminalSize() TermSize {
+func getTerminalSize() (TermSize,error) {
 	ws := &TermSize{}
 	retCode, _, errno := syscall.Syscall(syscall.SYS_IOCTL,
 		uintptr(syscall.Stdin),
@@ -19,9 +19,9 @@ func getTerminalSize() TermSize {
 		uintptr(unsafe.Pointer(ws)))
 
 	if int(retCode) == -1 {
-		panic(errno)
+		return *ws,errno
 	}
-	return *ws
+	return *ws,nil
 }
 func GetWidth2() {
 	cmd := exec.Command("stty", "size")

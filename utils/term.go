@@ -8,5 +8,5 @@ type TermSize struct {
 }
 
 func GetTerminalSize() (TermSize, error) {
-	return getTerminalSize(), nil
+	return getTerminalSize()
 }
