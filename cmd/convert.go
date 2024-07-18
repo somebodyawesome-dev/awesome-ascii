@@ -2,8 +2,8 @@ package cmd
 
 import (
 	"fmt"
-	"log"
-	. "github.com/somebodyawesome-dev/awesome-ascii.git/ascii"
+	"os"
+	"github.com/somebodyawesome-dev/awesome-ascii.git/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -18,16 +18,13 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("convert called")
-		imagePath := "./images/cat.jpg"
-		newWidth := 100
+		termSize, err := utils.GetTerminalSize()
 
-		asciiArt, err := ConvertImageToASCII(imagePath, newWidth)
 		if err != nil {
-			log.Fatalf("Error: %v", err)
+			fmt.Println(err)
+			os.Exit(1)
 		}
-
-		fmt.Println(asciiArt)
+		fmt.Printf("%+v\n", termSize)
 
 	},
 }
