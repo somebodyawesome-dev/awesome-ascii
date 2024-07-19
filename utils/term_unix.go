@@ -3,10 +3,6 @@
 package utils
 
 import (
-	"fmt"
-	"log"
-	"os"
-	"os/exec"
 	"syscall"
 	"unsafe"
 )
@@ -23,13 +19,4 @@ func getTerminalSize() (TermSize,error) {
 	}
 	return *ws,nil
 }
-func GetWidth2() {
-	cmd := exec.Command("stty", "size")
-	cmd.Stdin = os.Stdin
-	out, err := cmd.Output()
-	fmt.Printf("out: %#v\n", string(out))
-	fmt.Printf("err: %#v\n", err)
-	if err != nil {
-		log.Fatal(err)
-	}
-}
+

@@ -2,8 +2,8 @@
 
 package utils
 
-func getTerminalSize() TermSize {
+func getTerminalSize()  (TermSize,error) {
 	ws := &TermSize{}
 
-	return *ws
+	return *ws,nil
 }
