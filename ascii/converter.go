@@ -11,7 +11,7 @@ import (
 
 var asciiChars = []rune("@%#*+=-:. ")
 
-func scaleImage(img image.Image, newWidth int) image.Image {
+func scaleImage(img image.Image, newWidth uint16) image.Image {
 	bounds := img.Bounds()
 	width := bounds.Dx()
 	height := bounds.Dy()
@@ -19,7 +19,7 @@ func scaleImage(img image.Image, newWidth int) image.Image {
 	aspectRatio := float64(height) / float64(width)
 	newHeight := int(aspectRatio * float64(newWidth))
 
-	scaledImage := image.NewRGBA(image.Rect(0, 0, newWidth, newHeight))
+	scaledImage := image.NewRGBA(image.Rect(0, 0, int(newWidth), newHeight))
 	draw.CatmullRom.Scale(scaledImage, scaledImage.Bounds(), img, bounds, draw.Over, nil)
 
 	return scaledImage
@@ -56,7 +56,7 @@ func mapPixelsToASCII(img image.Image) string {
 	return asciiArt
 }
 
-func ConvertImageToASCII(imagePath string, newWidth int) (string, error) {
+func ConvertImageToASCII(imagePath string, newWidth uint16) (string, error) {
 	file, err := os.Open(imagePath)
 	if err != nil {
 		return "", fmt.Errorf("failed to open image: %v", err)
