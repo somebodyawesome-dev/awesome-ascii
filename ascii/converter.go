@@ -2,14 +2,34 @@ package ascii
 
 import (
 	"fmt"
-	"golang.org/x/image/draw"
 	"image"
 	"image/color"
 	"image/jpeg"
 	"os"
+
+	"golang.org/x/image/draw"
 )
 
-var asciiChars = []rune("@%#*+=-:. ")
+// minimalist
+var asciiChars = []rune("#@%=:. ") //I do recommend this one
+
+//binary
+// var asciiChars = []rune("01")
+
+//Extensive Character Set
+// var asciiChars = []rune("MWNXK0Okxdolc:;,. ") //not recommended
+
+//High Contrast Set
+// var asciiChars = []rune("@#S%?*+;:,. ")
+
+//Extended ASCII Art Set
+// var asciiChars = []rune("@W#98B0%Zq6x2t!i*|~-:. ")
+
+//High Detail Set
+// var asciiChars = []rune("@$B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/|()1{}[]?-_+~<>i!lI;:,\"^`'. ")
+
+//Basic
+// var asciiChars = []rune("@%#*+=-:. ")
 
 func scaleImage(img image.Image, newWidth uint16) image.Image {
 	bounds := img.Bounds()
@@ -47,7 +67,7 @@ func mapPixelsToASCII(img image.Image) string {
 	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
 		for x := bounds.Min.X; x < bounds.Max.X; x++ {
 			grayColor := color.GrayModel.Convert(img.At(x, y)).(color.Gray)
-			asciiChar := asciiChars[int(grayColor.Y) * len(asciiChars) / 256]
+			asciiChar := asciiChars[int(grayColor.Y)*len(asciiChars)/256]
 			asciiArt += string(asciiChar)
 		}
 		asciiArt += "\n"
