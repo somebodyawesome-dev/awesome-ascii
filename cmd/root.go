@@ -20,12 +20,8 @@ var rootCmd = &cobra.Command{
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	Run: func(cmd *cobra.Command, args []string) {
-		termSize,err:=utils.GetTerminalSize();if err != nil{
 
-			log.Fatalf("Error: %v", err)
-			os.Exit(1)
-		}
-		asciiArt, err := ConvertImageToASCII(inputFile, int(termSize.Col))
+		asciiArt, err := ConvertImageToASCII(inputFile, width)
 		if err != nil {
 			log.Fatalf("Error: %v", err)
 			os.Exit(1)
