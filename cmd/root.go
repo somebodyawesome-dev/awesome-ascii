@@ -12,6 +12,7 @@ import (
 
 var inputFile string
 var width uint16
+
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "awesome-ascii",
@@ -53,10 +54,11 @@ func init() {
 	rootCmd.Flags().StringVarP(&inputFile, "input", "i", "", "An image path which will be converted to ASCII")
 	rootCmd.MarkFlagRequired("input")
 
-	termSize,err := utils.GetTerminalSize();if err!=nill {
+	termSize, err := utils.GetTerminalSize()
+	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 
 	}
-	rootCmd.Flags().Uint16VarP(&width, "width", "w",termSize.Col , "An image path which will be converted to ASCII")
+	rootCmd.Flags().Uint16VarP(&width, "width", "w", termSize.Col, "An image path which will be converted to ASCII")
 }
