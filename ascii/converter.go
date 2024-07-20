@@ -7,29 +7,10 @@ import (
 	"image/jpeg"
 	"os"
 
+	"github.com/somebodyawesome-dev/awesome-ascii.git/utils"
 	"golang.org/x/image/draw"
 )
 
-// minimalist
-var asciiChars = []rune("#@%=:. ") //I do recommend this one
-
-//binary
-// var asciiChars = []rune("01")
-
-//Extensive Character Set
-// var asciiChars = []rune("MWNXK0Okxdolc:;,. ") //not recommended
-
-//High Contrast Set
-// var asciiChars = []rune("@#S%?*+;:,. ")
-
-//Extended ASCII Art Set
-// var asciiChars = []rune("@W#98B0%Zq6x2t!i*|~-:. ")
-
-//High Detail Set
-// var asciiChars = []rune("@$B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/|()1{}[]?-_+~<>i!lI;:,\"^`'. ")
-
-//Basic
-// var asciiChars = []rune("@%#*+=-:. ")
 
 func scaleImage(img image.Image, newWidth uint16) image.Image {
 	bounds := img.Bounds()
@@ -59,15 +40,20 @@ func convertToGrayscale(img image.Image) image.Image {
 	return grayImage
 }
 
-func mapPixelsToASCII(img image.Image) string {
+func mapPixelsToASCII(img image.Image,asciiType utils.AsciiCharType) string {
 	bounds := img.Bounds()
 	// width := bounds.Dx()
 	asciiArt := ""
+	asciiSet, err := asciiType.GetAsciiChars()
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 
 	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
 		for x := bounds.Min.X; x < bounds.Max.X; x++ {
 			grayColor := color.GrayModel.Convert(img.At(x, y)).(color.Gray)
-			asciiChar := asciiChars[int(grayColor.Y)*len(asciiChars)/256]
+			asciiChar := asciiSet[int(grayColor.Y)*len(asciiSet)/256]
 			asciiArt += string(asciiChar)
 		}
 		asciiArt += "\n"
@@ -76,7 +62,7 @@ func mapPixelsToASCII(img image.Image) string {
 	return asciiArt
 }
 
-func ConvertImageToASCII(imagePath string, newWidth uint16) (string, error) {
+func ConvertImageToASCII(imagePath string, newWidth uint16,asciiType utils.AsciiCharType) (string, error) {
 	file, err := os.Open(imagePath)
 	if err != nil {
 		return "", fmt.Errorf("failed to open image: %v", err)
@@ -90,7 +76,7 @@ func ConvertImageToASCII(imagePath string, newWidth uint16) (string, error) {
 
 	scaledImage := scaleImage(img, newWidth)
 	grayImage := convertToGrayscale(scaledImage)
-	asciiArt := mapPixelsToASCII(grayImage)
+	asciiArt := mapPixelsToASCII(grayImage,asciiType)
 
 	return asciiArt, nil
 }
