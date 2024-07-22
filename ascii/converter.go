@@ -11,7 +11,6 @@ import (
 	"golang.org/x/image/draw"
 )
 
-
 func scaleImage(img image.Image, newWidth uint16) image.Image {
 	bounds := img.Bounds()
 	width := bounds.Dx()
@@ -40,7 +39,7 @@ func convertToGrayscale(img image.Image) image.Image {
 	return grayImage
 }
 
-func mapPixelsToASCII(img image.Image,asciiType utils.AsciiCharType) string {
+func mapPixelsToASCII(img image.Image, asciiType utils.AsciiCharType, ker Kernel) string {
 	bounds := img.Bounds()
 	// width := bounds.Dx()
 	asciiArt := ""
@@ -62,7 +61,7 @@ func mapPixelsToASCII(img image.Image,asciiType utils.AsciiCharType) string {
 	return asciiArt
 }
 
-func ConvertImageToASCII(imagePath string, newWidth uint16,asciiType utils.AsciiCharType) (string, error) {
+func ConvertImageToASCII(imagePath string, newWidth uint16, asciiType utils.AsciiCharType) (string, error) {
 	file, err := os.Open(imagePath)
 	if err != nil {
 		return "", fmt.Errorf("failed to open image: %v", err)
@@ -76,7 +75,32 @@ func ConvertImageToASCII(imagePath string, newWidth uint16,asciiType utils.Ascii
 
 	scaledImage := scaleImage(img, newWidth)
 	grayImage := convertToGrayscale(scaledImage)
-	asciiArt := mapPixelsToASCII(grayImage,asciiType)
+	asciiArt := mapPixelsToASCII(grayImage, asciiType)
 
 	return asciiArt, nil
+}
+
+func ApplySobel(img image.Image) image.Gray {
+
+	bounds := img.Bounds()
+
+	dx := []int{-1, 0, 1, -1, 0, 1, -1, 0, 1}
+	dy := []int{-1, -1, -1, 0, 0, 0, 1, 1, 1}
+	gx := []int{-1, 0, 1, -2, 0, 2, -1, 0, 1}
+	gy := []int{-1, -2, -1, 0, 0, 0, 1, 2, 1}
+
+	resultImage := image.NewGray(bounds) // create new gray image to store convo results
+
+	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
+		for x := bounds.Max.X; x < bounds.Max.X; x++ {
+			// skip edges and fill them with default value
+			// this will help preserving original image size
+			if x == bounds.Min.X || x == bounds.Max.X-1 || y == bounds.Min.Y || y == bounds.Max.Y-1 {
+				resultImage.SetGray(x, y, color.Gray{Y: 0})
+				continue
+			}
+
+		}
+	}
+
 }
