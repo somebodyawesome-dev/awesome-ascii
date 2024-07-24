@@ -5,6 +5,7 @@ import (
 	"image"
 	"image/color"
 	"image/jpeg"
+	"math"
 	"os"
 
 	"github.com/somebodyawesome-dev/awesome-ascii.git/utils"
@@ -25,7 +26,7 @@ func scaleImage(img image.Image, newWidth uint16) image.Image {
 	return scaledImage
 }
 
-func convertToGrayscale(img image.Image) image.Image {
+func convertToGrayscale(img image.Image) image.Gray {
 	bounds := img.Bounds()
 	grayImage := image.NewGray(bounds)
 
@@ -36,10 +37,10 @@ func convertToGrayscale(img image.Image) image.Image {
 		}
 	}
 
-	return grayImage
+	return *grayImage
 }
 
-func mapPixelsToASCII(img image.Image, asciiType utils.AsciiCharType, ker Kernel) string {
+func mapPixelsToASCII(img image.Gray, asciiType utils.AsciiCharType) string {
 	bounds := img.Bounds()
 	// width := bounds.Dx()
 	asciiArt := ""
@@ -51,7 +52,7 @@ func mapPixelsToASCII(img image.Image, asciiType utils.AsciiCharType, ker Kernel
 
 	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
 		for x := bounds.Min.X; x < bounds.Max.X; x++ {
-			grayColor := color.GrayModel.Convert(img.At(x, y)).(color.Gray)
+			grayColor := img.GrayAt(x,y)
 			asciiChar := asciiSet[int(grayColor.Y)*len(asciiSet)/256]
 			asciiArt += string(asciiChar)
 		}
@@ -89,6 +90,8 @@ func ApplySobel(img image.Image) image.Gray {
 	gx := []int{-1, 0, 1, -2, 0, 2, -1, 0, 1}
 	gy := []int{-1, -2, -1, 0, 0, 0, 1, 2, 1}
 
+	grayImage := convertToGrayscale(img)
+
 	resultImage := image.NewGray(bounds) // create new gray image to store convo results
 
 	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
@@ -100,7 +103,26 @@ func ApplySobel(img image.Image) image.Gray {
 				continue
 			}
 
+			var sobelX,sobelY int
+			for kernelIndex := 0 ; kernelIndex < 9 ; kernelIndex++ {
+
+				pixelXIndex := x+dx[kernelIndex]
+				pixelYIndex := y+dy[kernelIndex]
+
+				grayValue := grayImage.GrayAt(pixelXIndex,pixelYIndex).Y
+
+				sobelX += gx[kernelIndex] * int(grayValue)
+				sobelY += gy[kernelIndex] * int(grayValue)
+
+
+			}
+			magnitude := math.Sqrt(float64(sobelX*sobelX+sobelY*sobelY))
+			resultImage.SetGray(x,y,color.Gray{Y: uint8(magnitude)})
+
+
 		}
 	}
+
+	return *resultImage
 
 }
