@@ -2,8 +2,10 @@ package cmd
 
 import (
 	"fmt"
+	"image/jpeg"
 	"os"
-	"github.com/somebodyawesome-dev/awesome-ascii.git/utils"
+
+	"github.com/somebodyawesome-dev/awesome-ascii.git/ascii"
 	"github.com/spf13/cobra"
 )
 
@@ -18,13 +20,26 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		termSize, err := utils.GetTerminalSize()
-
+		file, err := os.Open("./images/girl.jpg")
 		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
+			fmt.Errorf("failed to open image: %v", err)
 		}
-		fmt.Printf("%+v\n", termSize)
+		defer file.Close()
+
+		img, err := jpeg.Decode(file)
+		if err != nil {
+			fmt.Errorf("failed to decode image: %v", err)
+		}
+
+		newImg := ascii.ApplySobel(img)
+		f, err := os.Create("sobel.jpg")
+		if err != nil {
+			panic(err)
+		}
+		defer f.Close()
+		if err = jpeg.Encode(f, &newImg, nil); err != nil {
+			fmt.Printf("failed to encode: %v", err)
+		}
 
 	},
 }
