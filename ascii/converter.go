@@ -95,7 +95,7 @@ func ApplySobel(img image.Image) image.Gray {
 	resultImage := image.NewGray(bounds) // create new gray image to store convo results
 
 	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
-		for x := bounds.Max.X; x < bounds.Max.X; x++ {
+		for x := bounds.Min.X; x < bounds.Max.X; x++ {
 			// skip edges and fill them with default value
 			// this will help preserving original image size
 			if x == bounds.Min.X || x == bounds.Max.X-1 || y == bounds.Min.Y || y == bounds.Max.Y-1 {
