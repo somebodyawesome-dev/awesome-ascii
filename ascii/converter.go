@@ -5,6 +5,7 @@ import (
 	"image"
 	"image/color"
 	"image/jpeg"
+	"image/png"
 	"math"
 	"os"
 
@@ -52,7 +53,7 @@ func mapPixelsToASCII(img image.Gray, asciiType utils.AsciiCharType) string {
 
 	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
 		for x := bounds.Min.X; x < bounds.Max.X; x++ {
-			grayColor := img.GrayAt(x,y)
+			grayColor := img.GrayAt(x, y)
 			asciiChar := asciiSet[int(grayColor.Y)*len(asciiSet)/256]
 			asciiArt += string(asciiChar)
 		}
@@ -69,9 +70,30 @@ func ConvertImageToASCII(imagePath string, newWidth uint16, asciiType utils.Asci
 	}
 	defer file.Close()
 
-	img, err := jpeg.Decode(file)
+	_, format, err := image.DecodeConfig(file)
 	if err != nil {
-		return "", fmt.Errorf("failed to decode image: %v", err)
+		return "", fmt.Errorf("failed to decode image config: %v", err)
+	}
+
+	_, err = file.Seek(0, 0)
+	if err != nil {
+		return "", fmt.Errorf("failed to seek file: %v", err)
+	}
+
+	var img image.Image
+	switch format {
+	case "jpeg":
+		img, err = jpeg.Decode(file)
+		if err != nil {
+			return "", fmt.Errorf("failed to decode JPEG image: %v", err)
+		}
+	case "png":
+		img, err = png.Decode(file)
+		if err != nil {
+			return "", fmt.Errorf("failed to decode PNG image: %v", err)
+		}
+	default:
+		return "", fmt.Errorf("unsupported image format: %s", format)
 	}
 
 	scaledImage := scaleImage(img, newWidth)
@@ -103,22 +125,20 @@ func ApplySobel(img image.Image) image.Gray {
 				continue
 			}
 
-			var sobelX,sobelY int
-			for kernelIndex := 0 ; kernelIndex < 9 ; kernelIndex++ {
+			var sobelX, sobelY int
+			for kernelIndex := 0; kernelIndex < 9; kernelIndex++ {
 
-				pixelXIndex := x+dx[kernelIndex]
-				pixelYIndex := y+dy[kernelIndex]
+				pixelXIndex := x + dx[kernelIndex]
+				pixelYIndex := y + dy[kernelIndex]
 
-				grayValue := grayImage.GrayAt(pixelXIndex,pixelYIndex).Y
+				grayValue := grayImage.GrayAt(pixelXIndex, pixelYIndex).Y
 
 				sobelX += gx[kernelIndex] * int(grayValue)
 				sobelY += gy[kernelIndex] * int(grayValue)
 
-
 			}
-			magnitude := math.Sqrt(float64(sobelX*sobelX+sobelY*sobelY))
-			resultImage.SetGray(x,y,color.Gray{Y: uint8(magnitude)})
-
+			magnitude := math.Sqrt(float64(sobelX*sobelX + sobelY*sobelY))
+			resultImage.SetGray(x, y, color.Gray{Y: uint8(magnitude)})
 
 		}
 	}
