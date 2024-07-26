@@ -116,7 +116,11 @@ func ApplySobel(img image.Image) image.Gray {
 
 	resultImage := image.NewGray(bounds) // create new gray image to store convo results
 
+	magnitudes := make([][]float64, bounds.Max.Y)
+	maxMagnitude := 0.0
+
 	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
+		magnitudes[y] = make([]float64, bounds.Max.X)
 		for x := bounds.Min.X; x < bounds.Max.X; x++ {
 			// skip edges and fill them with default value
 			// this will help preserving original image size
@@ -137,9 +141,19 @@ func ApplySobel(img image.Image) image.Gray {
 				sobelY += gy[kernelIndex] * int(grayValue)
 
 			}
-			magnitude := math.Sqrt(float64(sobelX*sobelX + sobelY*sobelY))
-			resultImage.SetGray(x, y, color.Gray{Y: uint8(magnitude)})
+			magnitudes[y][x] = math.Sqrt(float64(sobelX*sobelX + sobelY*sobelY))
+			if magnitudes[y][x] > maxMagnitude {
+				maxMagnitude = magnitudes[y][x]
+			}
 
+		}
+	}
+	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
+		for x := bounds.Min.X; x < bounds.Max.X; x++ {
+
+			// normilize magnitude valuese
+			magnitude := uint8(magnitudes[y][x] / maxMagnitude * 255)
+			resultImage.SetGray(x, y, color.Gray{Y: magnitude})
 		}
 	}
 
