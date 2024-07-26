@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+
 	. "github.com/somebodyawesome-dev/awesome-ascii.git/ascii"
 	"github.com/somebodyawesome-dev/awesome-ascii.git/utils"
 	"github.com/spf13/cobra"
@@ -12,6 +13,7 @@ import (
 var inputFile string
 var width uint16
 var asciiCharType utils.AsciiCharType = utils.Basic
+var outputFile string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -22,14 +24,16 @@ var rootCmd = &cobra.Command{
 	// has an action associated with it:
 	Run: func(cmd *cobra.Command, args []string) {
 
-
-		asciiArt, err := ConvertImageToASCII(inputFile, width,asciiCharType)
+		asciiArt, err := ConvertImageToASCII(inputFile, width, asciiCharType)
 		if err != nil {
 			log.Fatalf("Error: %v", err)
 			os.Exit(1)
 		}
-
-		fmt.Println(asciiArt)
+		if outputFile != "" {
+			utils.ToFile(asciiArt, outputFile)
+		} else {
+			fmt.Println(asciiArt)
+		}
 	},
 	Version: "0.0.1-alpha",
 }
@@ -63,6 +67,7 @@ func init() {
 	}
 	rootCmd.Flags().Uint16VarP(&width, "width", "w", termSize.Col, "An image path which will be converted to ASCII")
 
+	rootCmd.PersistentFlags().VarP(&asciiCharType, "ascii-type", "a", "Determine which set of ascii characters will be used")
 
-	rootCmd.PersistentFlags().VarP(&asciiCharType,"ascii-type","a","Determine which set of ascii characters will be used")
+	rootCmd.Flags().StringVarP(&outputFile, "output", "o", "", "An output path for the converted image")
 }
