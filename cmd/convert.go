@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/somebodyawesome-dev/awesome-ascii.git/ascii"
+	"github.com/somebodyawesome-dev/awesome-ascii.git/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -31,7 +32,7 @@ to quickly create a Cobra application.`,
 			fmt.Errorf("failed to decode image: %v", err)
 		}
 
-		newImg := ascii.ApplySobel(img)
+		newImg := ascii.ApplySobel(img)	
 		f, err := os.Create("sobel.jpg")
 		if err != nil {
 			panic(err)
@@ -40,6 +41,10 @@ to quickly create a Cobra application.`,
 		if err = jpeg.Encode(f, &newImg, nil); err != nil {
 			fmt.Printf("failed to encode: %v", err)
 		}
+		asciiResult,_ := ascii.ConvertImageToASCII("sobel.jpg",200,utils.Basic)
+
+		fmt.Println(asciiResult)
+	
 
 	},
 }
