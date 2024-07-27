@@ -24,11 +24,14 @@ var rootCmd = &cobra.Command{
 	// has an action associated with it:
 	Run: func(cmd *cobra.Command, args []string) {
 
-		asciiArt, err := ConvertImageToASCII(inputFile, width, asciiCharType)
+		img, err := utils.OpenImage(inputFile)
+
 		if err != nil {
 			log.Fatalf("Error: %v", err)
 			os.Exit(1)
 		}
+		asciiArt := ConvertImageToASCII(img, width, asciiCharType)
+	
 		if outputFile != "" {
 			utils.ToFile(asciiArt, outputFile)
 		} else {

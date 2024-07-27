@@ -63,45 +63,11 @@ func mapPixelsToASCII(img image.Gray, asciiType utils.AsciiCharType) string {
 	return asciiArt
 }
 
-func ConvertImageToASCII(imagePath string, newWidth uint16, asciiType utils.AsciiCharType) (string, error) {
-	file, err := os.Open(imagePath)
-	if err != nil {
-		return "", fmt.Errorf("failed to open image: %v", err)
-	}
-	defer file.Close()
-
-	_, format, err := image.DecodeConfig(file)
-	if err != nil {
-		return "", fmt.Errorf("failed to decode image config: %v", err)
-	}
-
-	_, err = file.Seek(0, 0)
-	if err != nil {
-		return "", fmt.Errorf("failed to seek file: %v", err)
-	}
-
-	var img image.Image
-	switch format {
-	case "jpeg":
-		img, err = jpeg.Decode(file)
-		if err != nil {
-			return "", fmt.Errorf("failed to decode JPEG image: %v", err)
-		}
-	case "png":
-		img, err = png.Decode(file)
-		if err != nil {
-			return "", fmt.Errorf("failed to decode PNG image: %v", err)
-		}
-	default:
-		return "", fmt.Errorf("unsupported image format: %s", format)
-	}
-
+func ConvertImageToASCII(img image.Image, newWidth uint16, asciiType utils.AsciiCharType) string {
 	scaledImage := scaleImage(img, newWidth)
 	grayImage := convertToGrayscale(scaledImage)
 	asciiArt := mapPixelsToASCII(grayImage, asciiType)
-
-	return asciiArt, nil
-}
+	return asciiArt}
 
 func ApplySobel(img image.Image) image.Gray {
 
@@ -152,7 +118,7 @@ func ApplySobel(img image.Image) image.Gray {
 		for x := bounds.Min.X; x < bounds.Max.X; x++ {
 
 			// normilize magnitude valuese
-			magnitude := uint8(magnitudes[y][x] / maxMagnitude * 255)
+			magnitude := uint8((1 - magnitudes[y][x]/maxMagnitude) * 255)
 			resultImage.SetGray(x, y, color.Gray{Y: magnitude})
 		}
 	}
