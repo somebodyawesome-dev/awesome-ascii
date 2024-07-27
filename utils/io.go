@@ -9,41 +9,43 @@ import (
 	"os"
 )
 
-func OpenImage(filepath string) (image.Image, error) {
 
+// OpenImage opens and decodes an image file from the given filepath.
+func OpenImage(filepath string) (image.Image, error) {
 	file, err := os.Open(filepath)
 	if err != nil {
 		return nil, fmt.Errorf("failed to open image: %v", err)
 	}
 	defer file.Close()
 
+	// Check the image format.
 	_, format, err := image.DecodeConfig(file)
 	if err != nil {
 		return nil, fmt.Errorf("failed to decode image config: %v", err)
 	}
 
-	_, err = file.Seek(0, 0)
-	if err != nil {
+	// Reset the file pointer to the beginning of the file.
+	if _, err := file.Seek(0, 0); err != nil {
 		return nil, fmt.Errorf("failed to seek file: %v", err)
 	}
 
-	var img image.Image
+	// Decode the image based on its format.
 	switch format {
 	case "jpeg":
-		img, err = jpeg.Decode(file)
+		img, err := jpeg.Decode(file)
 		if err != nil {
 			return nil, fmt.Errorf("failed to decode JPEG image: %v", err)
 		}
+		return img, nil
 	case "png":
-		img, err = png.Decode(file)
+		img, err := png.Decode(file)
 		if err != nil {
 			return nil, fmt.Errorf("failed to decode PNG image: %v", err)
 		}
+		return img, nil
 	default:
 		return nil, fmt.Errorf("unsupported image format: %s", format)
 	}
-	return img, nil
-
 }
 
 func ToStd(ascii string) (int, error) {
