@@ -67,9 +67,19 @@ func ConvertImageToASCII(img image.Image, newWidth uint16, asciiType utils.Ascii
 	scaledImage := scaleImage(img, newWidth)
 	grayImage := convertToGrayscale(scaledImage)
 	asciiArt := mapPixelsToASCII(grayImage, asciiType)
-	return asciiArt}
+	return asciiArt
+}
 
-func ApplySobel(img image.Image) image.Gray {
+type SobelImage struct {
+	image.Gray
+	edgesAngle [][]float64
+}
+
+func (s SobelImage) GetEdgesAngleAt(x, y int) float64 {
+	return s.edgesAngle[y][x]
+}
+
+func ApplySobel(img image.Image) SobelImage{
 
 	bounds := img.Bounds()
 
@@ -83,10 +93,12 @@ func ApplySobel(img image.Image) image.Gray {
 	resultImage := image.NewGray(bounds) // create new gray image to store convo results
 
 	magnitudes := make([][]float64, bounds.Max.Y)
+	angles := make([][]float64, bounds.Max.Y)
 	maxMagnitude := 0.0
 
 	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
 		magnitudes[y] = make([]float64, bounds.Max.X)
+		angles[y] = make([]float64,bounds.Max.X)
 		for x := bounds.Min.X; x < bounds.Max.X; x++ {
 			// skip edges and fill them with default value
 			// this will help preserving original image size
@@ -108,6 +120,7 @@ func ApplySobel(img image.Image) image.Gray {
 
 			}
 			magnitudes[y][x] = math.Sqrt(float64(sobelX*sobelX + sobelY*sobelY))
+			angles[y][x] = math.Atan2(float64(sobelY),float64(sobelX))
 			if magnitudes[y][x] > maxMagnitude {
 				maxMagnitude = magnitudes[y][x]
 			}
@@ -123,6 +136,6 @@ func ApplySobel(img image.Image) image.Gray {
 		}
 	}
 
-	return *resultImage
+	return SobelImage{Gray: *resultImage,edgesAngle:angles}
 
 }
