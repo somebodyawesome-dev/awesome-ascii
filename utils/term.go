@@ -7,6 +7,6 @@ type TermSize struct {
 	Ypixel uint16
 }
 
-func GetTerminalSize() (TermSize, error) {
+func GetTerminalSize() TermSize {
 	return getTerminalSize()
 }

@@ -62,12 +62,8 @@ func init() {
 	rootCmd.Flags().StringVarP(&inputFile, "input", "i", "", "An image path which will be converted to ASCII")
 	rootCmd.MarkFlagRequired("input")
 
-	termSize, err := utils.GetTerminalSize()
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+	termSize := utils.GetTerminalSize()
 
-	}
 	rootCmd.Flags().Uint16VarP(&width, "width", "w", termSize.Col, "An image path which will be converted to ASCII")
 
 	rootCmd.PersistentFlags().VarP(&asciiCharType, "ascii-type", "a", "Determine which set of ascii characters will be used")
