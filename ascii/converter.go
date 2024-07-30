@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"image"
 	"image/color"
-	"image/jpeg"
-	"image/png"
 	"math"
 	"os"
 
