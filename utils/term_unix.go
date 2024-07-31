@@ -18,6 +18,7 @@ func getTerminalSize() TermSize {
 	if int(retCode) == -1 {
 		fmt.Println("Couldn't get tty size")
 		fmt.Println("Falling back to use default value for tty")
+		return *ws
 	}
 	return *ws
 }
