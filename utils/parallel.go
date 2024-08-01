@@ -7,23 +7,8 @@ import (
 	"sync"
 )
 
-func ParallelImageProcessing(size image.Point, callback func(x, y int)) {
 
-	var ws sync.WaitGroup
-	for x := 0; x < size.X; x++ {
-
-		for y := 0; y < size.Y; y++ {
-			ws.Add(1)
-			go func(x, y int) {
-				defer ws.Done()
-				callback(x, y)
-			}(x, y)
-
-		}
-	}
-	ws.Wait()
-}
-func ParallelForEachPixel(size image.Point, f func(x int, y int)) {
+func ParallelImageProcess(size image.Point, f func(x int, y int)) {
 	procs := runtime.GOMAXPROCS(0)
 	var waitGroup sync.WaitGroup
 	for i := 0; i < procs; i++ {

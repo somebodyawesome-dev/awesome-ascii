@@ -40,7 +40,7 @@ func ApplySobel(img image.Image) SobelImage {
 		angles[y] = make([]float64, bounds.Max.X)
 
 	}
-	utils.ParallelForEachPixel(bounds.Size(), func(x, y int) {
+	utils.ParallelImageProcess(bounds.Size(), func(x, y int) {
 
 		// skip edges and fill them with default value
 		// this will help preserving original image size
@@ -69,7 +69,7 @@ func ApplySobel(img image.Image) SobelImage {
 
 	})
 
-	utils.ParallelForEachPixel(bounds.Size(), func(x, y int) {
+	utils.ParallelImageProcess(bounds.Size(), func(x, y int) {
 
 		// normilize magnitude valuese
 		magnitude := uint8((1 - magnitudes[y][x]/maxMagnitude) * 255)
