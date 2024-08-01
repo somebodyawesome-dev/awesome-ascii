@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"runtime"
 
 	. "github.com/somebodyawesome-dev/awesome-ascii.git/ascii"
 	"github.com/somebodyawesome-dev/awesome-ascii.git/utils"
@@ -14,6 +15,7 @@ var inputFile string
 var width uint16
 var asciiCharType utils.AsciiCharType = utils.Basic
 var outputFile string
+var concurrency int
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -31,12 +33,16 @@ var rootCmd = &cobra.Command{
 			os.Exit(1)
 		}
 		asciiArt := ConvertImageToASCII(img, width, asciiCharType)
-	
+
 		if outputFile != "" {
 			utils.ToFile(asciiArt, outputFile)
 		} else {
 			fmt.Println(asciiArt)
 		}
+	},
+	PersistentPreRun: func(cmd *cobra.Command, args []string) {
+		//set concurrency 
+		runtime.GOMAXPROCS(concurrency)
 	},
 	Version: "0.0.1-alpha",
 }
@@ -69,4 +75,6 @@ func init() {
 	rootCmd.PersistentFlags().VarP(&asciiCharType, "ascii-type", "a", "Determine which set of ascii characters will be used")
 
 	rootCmd.Flags().StringVarP(&outputFile, "output", "o", "", "An output path for the converted image")
+
+	rootCmd.PersistentFlags().IntVarP(&concurrency, "concurrency", "c", runtime.NumCPU(), "Set GOMAXPROCS")
 }
