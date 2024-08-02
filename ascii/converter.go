@@ -28,19 +28,16 @@ func convertToGrayscale(img image.Image) image.Gray {
 	bounds := img.Bounds()
 	grayImage := image.NewGray(bounds)
 
-	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
-		for x := bounds.Min.X; x < bounds.Max.X; x++ {
-			grayColor := color.GrayModel.Convert(img.At(x, y))
-			grayImage.Set(x, y, grayColor)
-		}
-	}
+	utils.ParallelImageProcess(bounds.Size(), func(x, y int) {
+		grayColor := color.GrayModel.Convert(img.At(x, y))
+		grayImage.Set(x, y, grayColor)
+	})
 
 	return *grayImage
 }
 
 func mapPixelsToASCII(img image.Gray, asciiType utils.AsciiCharType) string {
 	bounds := img.Bounds()
-	// width := bounds.Dx()
 	asciiArt := ""
 	asciiSet, err := asciiType.GetAsciiChars()
 	if err != nil {
@@ -48,6 +45,7 @@ func mapPixelsToASCII(img image.Gray, asciiType utils.AsciiCharType) string {
 		os.Exit(1)
 	}
 
+// TODO: Find work around to use parellel processing
 	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
 		for x := bounds.Min.X; x < bounds.Max.X; x++ {
 			grayColor := img.GrayAt(x, y)
