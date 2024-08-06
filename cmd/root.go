@@ -32,7 +32,9 @@ var rootCmd = &cobra.Command{
 			log.Fatalf("Error: %v", err)
 			os.Exit(1)
 		}
-		asciiArt := ConvertImageToASCII(img, width, asciiCharType)
+		scaledImage :=ScaleImage(img, width)
+		grayImage := ConvertToGrayscale(scaledImage)
+		asciiArt := MapPixelsToASCII(grayImage, asciiCharType)
 
 		if outputFile != "" {
 			utils.ToFile(asciiArt, outputFile)
@@ -41,7 +43,7 @@ var rootCmd = &cobra.Command{
 		}
 	},
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
-		//set concurrency 
+		//set concurrency
 		runtime.GOMAXPROCS(concurrency)
 	},
 	Version: "0.0.1-alpha",
@@ -65,16 +67,16 @@ func init() {
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
-	rootCmd.Flags().StringVarP(&inputFile, "input", "i", "", "An image path which will be converted to ASCII")
-	rootCmd.MarkFlagRequired("input")
+	rootCmd.PersistentFlags().StringVarP(&inputFile, "input", "i", "", "An image path which will be converted to ASCII")
+	rootCmd.MarkPersistentFlagRequired("input")
 
 	termSize := utils.GetTerminalSize()
 
-	rootCmd.Flags().Uint16VarP(&width, "width", "w", termSize.Col, "An image path which will be converted to ASCII")
+	rootCmd.PersistentFlags().Uint16VarP(&width, "width", "w", termSize.Col, "An image path which will be converted to ASCII")
 
 	rootCmd.PersistentFlags().VarP(&asciiCharType, "ascii-type", "a", "Determine which set of ascii characters will be used")
 
-	rootCmd.Flags().StringVarP(&outputFile, "output", "o", "", "An output path for the converted image")
+	rootCmd.PersistentFlags().StringVarP(&outputFile, "output", "o", "", "An output path for the converted image")
 
 	rootCmd.PersistentFlags().IntVarP(&concurrency, "concurrency", "c", runtime.NumCPU(), "Set GOMAXPROCS")
 }

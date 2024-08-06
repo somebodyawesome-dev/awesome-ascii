@@ -20,30 +20,27 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		img, err := utils.OpenImage("images/girl.jpg")
+
+		img, err := utils.OpenImage(inputFile)
+
 		if err != nil {
-			fmt.Println(err)
+			fmt.Printf("rror: %v \n", err)
 			os.Exit(1)
 		}
+		scaledImage := ascii.ScaleImage(img, width)
+		grayImage := ascii.ConvertToGrayscale(scaledImage)
+		newImg := ascii.ApplySobel(grayImage)
+		asciiArt := ascii.MapPixelsToASCII(newImg.Gray, asciiCharType)
 
-		newImg := ascii.ApplySobel(img)
-		asciiResult := ascii.ConvertImageToASCII(&newImg, 200, utils.Basic)
-
-		fmt.Println(asciiResult)
+		if outputFile != "" {
+			utils.ToFile(asciiArt, outputFile)
+		} else {
+			fmt.Println(asciiArt)
+		}
 
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(convertCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// convertCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// convertCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

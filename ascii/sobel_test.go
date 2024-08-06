@@ -12,7 +12,8 @@ func BenchmarkSobel(b *testing.B) {
 	if err != nil {
 		b.Error(err)
 	}
-	ApplySobel(img)
+	grayImage := ConvertToGrayscale(img)
+	ApplySobel(grayImage)
 }
 func BenchmarkSobelSeq(b *testing.B) {
 
@@ -20,6 +21,7 @@ func BenchmarkSobelSeq(b *testing.B) {
 	if err != nil {
 		b.Error(err)
 	}
-	ApplySobelSeq(img)
+	grayImage := ConvertToGrayscale(img)
+	ApplySobelSeq(grayImage)
 
 }

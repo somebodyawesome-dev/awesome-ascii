@@ -10,7 +10,7 @@ import (
 	"golang.org/x/image/draw"
 )
 
-func scaleImage(img image.Image, newWidth uint16) image.Image {
+func ScaleImage(img image.Image, newWidth uint16) image.Image {
 	bounds := img.Bounds()
 	width := bounds.Dx()
 	height := bounds.Dy()
@@ -24,7 +24,7 @@ func scaleImage(img image.Image, newWidth uint16) image.Image {
 	return scaledImage
 }
 
-func convertToGrayscale(img image.Image) image.Gray {
+func ConvertToGrayscale(img image.Image) image.Gray {
 	bounds := img.Bounds()
 	grayImage := image.NewGray(bounds)
 
@@ -36,7 +36,7 @@ func convertToGrayscale(img image.Image) image.Gray {
 	return *grayImage
 }
 
-func mapPixelsToASCII(img image.Gray, asciiType utils.AsciiCharType) string {
+func MapPixelsToASCII(img image.Gray, asciiType utils.AsciiCharType) string {
 	bounds := img.Bounds()
 	asciiArt := ""
 	asciiSet, err := asciiType.GetAsciiChars()
@@ -59,8 +59,8 @@ func mapPixelsToASCII(img image.Gray, asciiType utils.AsciiCharType) string {
 }
 
 func ConvertImageToASCII(img image.Image, newWidth uint16, asciiType utils.AsciiCharType) string {
-	scaledImage := scaleImage(img, newWidth)
-	grayImage := convertToGrayscale(scaledImage)
-	asciiArt := mapPixelsToASCII(grayImage, asciiType)
+	scaledImage := ScaleImage(img, newWidth)
+	grayImage := ConvertToGrayscale(scaledImage)
+	asciiArt := MapPixelsToASCII(grayImage, asciiType)
 	return asciiArt
 }

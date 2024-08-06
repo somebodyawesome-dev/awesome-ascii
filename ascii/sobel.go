@@ -17,7 +17,7 @@ func (s SobelImage) GetEdgesAngleAt(x, y int) float64 {
 	return s.edgesAngle[y][x]
 }
 
-func ApplySobel(img image.Image) SobelImage {
+func ApplySobel(img image.Gray) SobelImage {
 
 	bounds := img.Bounds()
 
@@ -26,7 +26,6 @@ func ApplySobel(img image.Image) SobelImage {
 	gx := []int{-1, 0, 1, -2, 0, 2, -1, 0, 1}
 	gy := []int{-1, -2, -1, 0, 0, 0, 1, 2, 1}
 
-	grayImage := convertToGrayscale(img)
 
 	resultImage := image.NewGray(bounds) // create new gray image to store convo results
 
@@ -55,7 +54,7 @@ func ApplySobel(img image.Image) SobelImage {
 			pixelXIndex := x + dx[kernelIndex]
 			pixelYIndex := y + dy[kernelIndex]
 
-			grayValue := grayImage.GrayAt(pixelXIndex, pixelYIndex).Y
+			grayValue := img.GrayAt(pixelXIndex, pixelYIndex).Y
 
 			sobelX += gx[kernelIndex] * int(grayValue)
 			sobelY += gy[kernelIndex] * int(grayValue)
@@ -80,7 +79,7 @@ func ApplySobel(img image.Image) SobelImage {
 
 }
 
-func ApplySobelSeq(img image.Image) SobelImage {
+func ApplySobelSeq(img image.Gray) SobelImage {
 
 	bounds := img.Bounds()
 
@@ -89,7 +88,6 @@ func ApplySobelSeq(img image.Image) SobelImage {
 	gx := []int{-1, 0, 1, -2, 0, 2, -1, 0, 1}
 	gy := []int{-1, -2, -1, 0, 0, 0, 1, 2, 1}
 
-	grayImage := convertToGrayscale(img)
 
 	resultImage := image.NewGray(bounds) // create new gray image to store convo results
 
@@ -114,7 +112,7 @@ func ApplySobelSeq(img image.Image) SobelImage {
 				pixelXIndex := x + dx[kernelIndex]
 				pixelYIndex := y + dy[kernelIndex]
 
-				grayValue := grayImage.GrayAt(pixelXIndex, pixelYIndex).Y
+				grayValue := img.GrayAt(pixelXIndex, pixelYIndex).Y
 
 				sobelX += gx[kernelIndex] * int(grayValue)
 				sobelY += gy[kernelIndex] * int(grayValue)
