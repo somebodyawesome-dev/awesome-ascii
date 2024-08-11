@@ -32,6 +32,8 @@ to quickly create a Cobra application.`,
 		newImg := ascii.ApplySobel(grayImage)
 		asciiArt := ascii.MapPixelsToASCII(newImg.Gray, asciiCharType)
 
+		asciiArt = newImg.ApplyEgdesToAscii(asciiArt)
+
 		if outputFile != "" {
 			utils.ToFile(asciiArt, outputFile)
 		} else {

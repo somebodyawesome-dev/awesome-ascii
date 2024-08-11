@@ -4,6 +4,7 @@ import (
 	"image"
 	"image/color"
 	"math"
+	"strings"
 
 	"github.com/somebodyawesome-dev/awesome-ascii.git/utils"
 )
@@ -17,6 +18,36 @@ func (s SobelImage) GetEdgesAngleAt(x, y int) float64 {
 	return s.edgesAngle[y][x]
 }
 
+func (s SobelImage) ApplyEgdesToAscii(asciiArt string) string {
+
+	rows := strings.Split(asciiArt, "\n")
+
+	for y := 0; y < len(rows); y++ {
+		line := []rune(rows[y])
+
+		for x := 0; x < len(rows[y]); x++ {
+
+			edge := s.GetEdgesAngleAt(x, y)
+
+			if (edge >= 0 && edge < 0.05) || (edge > 0.9 && edge <= 1) {
+
+				line[x] = '_'
+			} else if edge >= 0.45 && edge <= 0.55 {
+				line[x] = '|'
+			} else if edge >= 0.25 && edge < 0.3 {
+				line[x] = '\\'
+			} else if edge >= 0.75 && edge <= 0.9 {
+				line[x] = '/'
+			}
+
+		}
+		rows[y] = string(line)
+
+	}
+	return strings.Join(rows, "\n")
+
+}
+
 func ApplySobel(img image.Gray) SobelImage {
 
 	bounds := img.Bounds()
@@ -25,7 +56,6 @@ func ApplySobel(img image.Gray) SobelImage {
 	dy := []int{-1, -1, -1, 0, 0, 0, 1, 1, 1}
 	gx := []int{-1, 0, 1, -2, 0, 2, -1, 0, 1}
 	gy := []int{-1, -2, -1, 0, 0, 0, 1, 2, 1}
-
 
 	resultImage := image.NewGray(bounds) // create new gray image to store convo results
 
@@ -61,7 +91,8 @@ func ApplySobel(img image.Gray) SobelImage {
 
 		}
 		magnitudes[y][x] = math.Sqrt(float64(sobelX*sobelX + sobelY*sobelY))
-		angles[y][x] = math.Atan2(float64(sobelY), float64(sobelX))
+		angles[y][x] = 0.5*math.Atan2(float64(sobelY), float64(sobelX))/math.Pi + 0.5 // result in range [0, 1]
+
 		if magnitudes[y][x] > maxMagnitude {
 			maxMagnitude = magnitudes[y][x]
 		}
@@ -87,7 +118,6 @@ func ApplySobelSeq(img image.Gray) SobelImage {
 	dy := []int{-1, -1, -1, 0, 0, 0, 1, 1, 1}
 	gx := []int{-1, 0, 1, -2, 0, 2, -1, 0, 1}
 	gy := []int{-1, -2, -1, 0, 0, 0, 1, 2, 1}
-
 
 	resultImage := image.NewGray(bounds) // create new gray image to store convo results
 
@@ -119,7 +149,9 @@ func ApplySobelSeq(img image.Gray) SobelImage {
 
 			}
 			magnitudes[y][x] = math.Sqrt(float64(sobelX*sobelX + sobelY*sobelY))
-			angles[y][x] = math.Atan2(float64(sobelY), float64(sobelX))
+
+			angles[y][x] = 0.5*math.Atan2(float64(sobelY), float64(sobelX))/math.Pi + 0.5 // result in range [0, 1]
+
 			if magnitudes[y][x] > maxMagnitude {
 				maxMagnitude = magnitudes[y][x]
 			}
