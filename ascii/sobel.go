@@ -4,10 +4,11 @@ import (
 	"image"
 	"image/color"
 	"math"
-	"strings"
 
 	"github.com/somebodyawesome-dev/awesome-ascii.git/utils"
 )
+
+var SOBEL_THRESHOLD uint8 = 130
 
 type SobelImage struct {
 	image.Gray
@@ -18,33 +19,38 @@ func (s SobelImage) GetEdgesAngleAt(x, y int) float64 {
 	return s.edgesAngle[y][x]
 }
 
-func (s SobelImage) ApplyEgdesToAscii(asciiArt string) string {
+func (s SobelImage) ApplyEgdesToAscii() string {
 
-	rows := strings.Split(asciiArt, "\n")
+	bounds := s.Bounds()
+	result := ""
 
-	for y := 0; y < len(rows); y++ {
-		line := []rune(rows[y])
+	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
+		for x := bounds.Min.X; x < bounds.Max.X; x++ {
 
-		for x := 0; x < len(rows[y]); x++ {
+			if s.GrayAt(x, y).Y < SOBEL_THRESHOLD {
 
-			edge := s.GetEdgesAngleAt(x, y)
+				edge := s.GetEdgesAngleAt(x, y)
 
-			if (edge >= 0 && edge < 0.05) || (edge > 0.9 && edge <= 1) {
 
-				line[x] = '_'
-			} else if edge >= 0.45 && edge <= 0.55 {
-				line[x] = '|'
-			} else if edge >= 0.25 && edge < 0.3 {
-				line[x] = '\\'
-			} else if edge >= 0.75 && edge <= 0.9 {
-				line[x] = '/'
+				if (edge >= 0 && edge < 0.05) || (edge > 0.9 && edge <= 1) {
+
+					result += "_"
+				} else if edge >= 0.45 && edge <= 0.55 {
+					result += "|"
+				} else if edge >= 0.05 && edge < 0.45 {
+					result += "/"
+				} else if edge >= 0.55 && edge <= 0.9 {
+					result += "\\"
+				}
+
+			} else {
+				result += " "
 			}
-
 		}
-		rows[y] = string(line)
+		result += "\n"
 
 	}
-	return strings.Join(rows, "\n")
+	return result
 
 }
 

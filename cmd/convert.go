@@ -30,9 +30,9 @@ to quickly create a Cobra application.`,
 		scaledImage := ascii.ScaleImage(img, width)
 		grayImage := ascii.ConvertToGrayscale(scaledImage)
 		newImg := ascii.ApplySobel(grayImage)
-		asciiArt := ascii.MapPixelsToASCII(newImg.Gray, asciiCharType)
+		// asciiArt := ascii.MapPixelsToASCII(newImg.Gray, asciiCharType)
 
-		asciiArt = newImg.ApplyEgdesToAscii(asciiArt)
+		asciiArt := newImg.ApplyEgdesToAscii()
 
 		if outputFile != "" {
 			utils.ToFile(asciiArt, outputFile)
@@ -45,4 +45,5 @@ to quickly create a Cobra application.`,
 
 func init() {
 	rootCmd.AddCommand(convertCmd)
+	convertCmd.Flags().Uint8VarP(&ascii.SOBEL_THRESHOLD, "threshold", "t", ascii.SOBEL_THRESHOLD, "Threshold between 0..255 to control intensity of assci in the edges of the image")
 }
