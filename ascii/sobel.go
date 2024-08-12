@@ -32,14 +32,14 @@ func (s SobelImage) ApplyEgdesToAscii() string {
 				edge := s.GetEdgesAngleAt(x, y)
 
 
-				if (edge >= 0 && edge < 0.05) || (edge > 0.9 && edge <= 1) {
+				if (edge >= 0 && edge < 0.05) || (edge > 0.95 && edge <= 1) {
 
 					result += "_"
 				} else if edge >= 0.45 && edge <= 0.55 {
 					result += "|"
 				} else if edge >= 0.05 && edge < 0.45 {
 					result += "/"
-				} else if edge >= 0.55 && edge <= 0.9 {
+				} else if edge >= 0.55 && edge <= 0.95 {
 					result += "\\"
 				}
 
