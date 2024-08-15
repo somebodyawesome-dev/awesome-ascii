@@ -6,22 +6,22 @@ import (
 	"os"
 	"runtime"
 
-	. "github.com/somebodyawesome-dev/awesome-ascii.git/ascii"
+	. "github.com/somebodyawesome-dev/awesome-ascii.git/core"
 	"github.com/somebodyawesome-dev/awesome-ascii.git/utils"
 	"github.com/spf13/cobra"
 )
 
 var inputFile string
 var width uint16
-var asciiCharType utils.AsciiCharType = utils.Basic
+var asciiCharType AsciiCharType = Basic
 var outputFile string
 var concurrency int
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "awesome-ascii",
-	Short: "A Image to ASCII application",
-	Long:  `A Image to ASCII CLI application.`,
+	Short: "A image to ASCII CLI command",
+	Long:  `A command to turn image into  ASCII texts.`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	Run: func(cmd *cobra.Command, args []string) {
@@ -32,7 +32,7 @@ var rootCmd = &cobra.Command{
 			log.Fatalf("Error: %v", err)
 			os.Exit(1)
 		}
-		scaledImage :=ScaleImage(img, width)
+		scaledImage := ScaleImage(img, width)
 		grayImage := ConvertToGrayscale(scaledImage)
 		asciiArt := MapPixelsToASCII(grayImage, asciiCharType)
 
@@ -59,14 +59,7 @@ func Execute() {
 }
 
 func init() {
-	// Here you will define your flags and configuration settings.
-	// Cobra supports persistent flags, which, if defined here,
-	// will be global for your application.
 
-	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.awesome-ascii.git.yaml)")
-
-	// Cobra also supports local flags, which will only run
-	// when this action is called directly.
 	rootCmd.PersistentFlags().StringVarP(&inputFile, "input", "i", "", "An image path which will be converted to ASCII")
 	rootCmd.MarkPersistentFlagRequired("input")
 

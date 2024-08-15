@@ -1,6 +1,9 @@
-package utils
+package core
 
-import "errors"
+import (
+	"errors"
+	"image"
+)
 
 // Since AssciCharType is a new type, you can’t compare it to other types anymore
 type AsciiCharType string
@@ -54,4 +57,11 @@ func (e AsciiCharType) GetAsciiChars() ([]rune, error) {
 		return chars, nil
 	}
 	return nil, errors.New("invalid AsciiCharType")
+}
+
+func ConvertImageToASCII(img image.Image, newWidth uint16, asciiType AsciiCharType) string {
+	scaledImage := ScaleImage(img, newWidth)
+	grayImage := ConvertToGrayscale(scaledImage)
+	asciiArt := MapPixelsToASCII(grayImage, asciiType)
+	return asciiArt
 }
