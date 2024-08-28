@@ -13,13 +13,11 @@ import (
 // sobelCmd represents the convert command
 var sobelCmd = &cobra.Command{
 	Use:   "sobel",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "A command that applies the Sobel edge detection algorithm to images and converts the result into ASCII art.",
+	Long: `part of a command-line interface (CLI) application designed to process images using the Sobel edge detection algorithm.
+This command reads an input image, scales it to the desired width, converts it to grayscale, and then applies the Sobel algorithm to highlight the edges.
+The resulting edge-detected image is then transformed into ASCII art.
+Users can choose to display the ASCII art directly in the terminal or save it to a file.`,
 	Run: func(cmd *cobra.Command, args []string) {
 
 		img, err := utils.OpenImage(config.InputFile)
