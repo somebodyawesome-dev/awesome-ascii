@@ -5,13 +5,14 @@ import (
 	"os"
 
 	"github.com/somebodyawesome-dev/awesome-ascii.git/ascii"
+	"github.com/somebodyawesome-dev/awesome-ascii.git/config"
 	"github.com/somebodyawesome-dev/awesome-ascii.git/utils"
 	"github.com/spf13/cobra"
 )
 
-// convertCmd represents the convert command
-var convertCmd = &cobra.Command{
-	Use:   "convert",
+// sobelCmd represents the convert command
+var sobelCmd = &cobra.Command{
+	Use:   "sobel",
 	Short: "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
@@ -21,21 +22,21 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		img, err := utils.OpenImage(inputFile)
+		img, err := utils.OpenImage(config.InputFile)
 
 		if err != nil {
 			fmt.Printf("rror: %v \n", err)
 			os.Exit(1)
 		}
-		scaledImage := ascii.ScaleImage(img, width)
+		scaledImage := ascii.ScaleImage(img, config.Width)
 		grayImage := ascii.ConvertToGrayscale(scaledImage)
 		newImg := ascii.ApplySobel(grayImage)
 		// asciiArt := ascii.MapPixelsToASCII(newImg.Gray, asciiCharType)
 
 		asciiArt := newImg.ApplyEgdesToAscii()
 
-		if outputFile != "" {
-			utils.ToFile(asciiArt, outputFile)
+		if config.OutputFile != "" {
+			utils.ToFile(asciiArt, config.OutputFile)
 		} else {
 			fmt.Println(asciiArt)
 		}
@@ -44,6 +45,6 @@ to quickly create a Cobra application.`,
 }
 
 func init() {
-	rootCmd.AddCommand(convertCmd)
-	convertCmd.Flags().Uint8VarP(&ascii.SOBEL_THRESHOLD, "threshold", "t", ascii.SOBEL_THRESHOLD, "Threshold between 0..255 to control intensity of assci in the edges of the image")
+	rootCmd.AddCommand(sobelCmd)
+	config.InitSobelConverter(sobelCmd)
 }
