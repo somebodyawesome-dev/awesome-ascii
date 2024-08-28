@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/somebodyawesome-dev/awesome-ascii.git/ascii"
 	"github.com/somebodyawesome-dev/awesome-ascii.git/config"
+	"github.com/somebodyawesome-dev/awesome-ascii.git/core"
 	"github.com/somebodyawesome-dev/awesome-ascii.git/utils"
 	"github.com/spf13/cobra"
 )
@@ -28,9 +28,9 @@ to quickly create a Cobra application.`,
 			fmt.Printf("rror: %v \n", err)
 			os.Exit(1)
 		}
-		scaledImage := ascii.ScaleImage(img, config.Width)
-		grayImage := ascii.ConvertToGrayscale(scaledImage)
-		newImg := ascii.ApplySobel(grayImage)
+		scaledImage := core.ScaleImage(img, config.Width)
+		grayImage := core.ConvertToGrayscale(scaledImage)
+		newImg := core.ApplySobel(grayImage)
 		// asciiArt := ascii.MapPixelsToASCII(newImg.Gray, asciiCharType)
 
 		asciiArt := newImg.ApplyEgdesToAscii()

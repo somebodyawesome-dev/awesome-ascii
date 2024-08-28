@@ -1,4 +1,4 @@
-package ascii
+package core
 
 import (
 	"fmt"
@@ -36,7 +36,7 @@ func ConvertToGrayscale(img image.Image) image.Gray {
 	return *grayImage
 }
 
-func MapPixelsToASCII(img image.Gray, asciiType utils.AsciiCharType) string {
+func MapPixelsToASCII(img image.Gray, asciiType AsciiCharType) string {
 	bounds := img.Bounds()
 	asciiArt := ""
 	asciiSet, err := asciiType.GetAsciiChars()
@@ -45,7 +45,7 @@ func MapPixelsToASCII(img image.Gray, asciiType utils.AsciiCharType) string {
 		os.Exit(1)
 	}
 
-// TODO: Find work around to use parellel processing
+	// TODO: Find work around to use parellel processing
 	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
 		for x := bounds.Min.X; x < bounds.Max.X; x++ {
 			grayColor := img.GrayAt(x, y)
@@ -55,12 +55,5 @@ func MapPixelsToASCII(img image.Gray, asciiType utils.AsciiCharType) string {
 		asciiArt += "\n"
 	}
 
-	return asciiArt
-}
-
-func ConvertImageToASCII(img image.Image, newWidth uint16, asciiType utils.AsciiCharType) string {
-	scaledImage := ScaleImage(img, newWidth)
-	grayImage := ConvertToGrayscale(scaledImage)
-	asciiArt := MapPixelsToASCII(grayImage, asciiType)
 	return asciiArt
 }

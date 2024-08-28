@@ -1,4 +1,4 @@
-package ascii
+package core
 
 import (
 	"image"
@@ -30,7 +30,6 @@ func (s SobelImage) ApplyEgdesToAscii() string {
 			if s.GrayAt(x, y).Y < SOBEL_THRESHOLD {
 
 				edge := s.GetEdgesAngleAt(x, y)
-
 
 				if (edge >= 0 && edge < 0.05) || (edge > 0.95 && edge <= 1) {
 
