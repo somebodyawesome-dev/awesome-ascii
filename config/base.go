@@ -1,13 +1,15 @@
 package config
 
 import (
+	"github.com/somebodyawesome-dev/awesome-ascii.git/core"
 	"github.com/somebodyawesome-dev/awesome-ascii.git/utils"
+
 	"github.com/spf13/cobra"
 )
 
 var InputFile string
 var Width uint16
-var AsciiCharType utils.AsciiCharType = utils.Basic
+var AsciiCharType core.AsciiCharType = core.Basic
 var OutputFile string
 
 func InitBaseConverter(cmd *cobra.Command) {
