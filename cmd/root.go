@@ -17,8 +17,11 @@ var concurrency int
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "awesome-ascii",
-	Short: "A image to ASCII CLI command",
-	Long:  `A command to turn image into  ASCII texts.`,
+	Short: "A command-line tool that converts images into ASCII art.",
+	Long: `a command-line interface (CLI) tool designed to transform images into ASCII text art.
+It processes an input image by scaling, converting it to grayscale, and then mapping the pixel values to ASCII characters.
+The resulting ASCII art can be output directly to the terminal or saved to a file.
+The command also allows for adjusting the concurrency level to optimize performance.`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	Run: func(cmd *cobra.Command, args []string) {
