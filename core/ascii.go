@@ -23,7 +23,7 @@ var validAsciiCharTypes = map[string]AsciiCharType{
 	"extended":    Extended,
 	"high_detail": HighDetail,
 }
-var asciiCharsMap = map[AsciiCharType][]rune{
+var AsciiCharsMap = map[AsciiCharType][]rune{
 	Basic:      []rune("@%#*+=-:. "),
 	Binary:     []rune("01"),
 	Contrast:   []rune("@#S%?*+;:,. "),
@@ -53,7 +53,7 @@ func (e *AsciiCharType) Type() string {
 }
 
 func (e AsciiCharType) GetAsciiChars() ([]rune, error) {
-	if chars, ok := asciiCharsMap[e]; ok {
+	if chars, ok := AsciiCharsMap[e]; ok {
 		return chars, nil
 	}
 	return nil, errors.New("invalid AsciiCharType")
