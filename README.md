@@ -58,7 +58,7 @@ Running the following command will open the CLI in interactive mode
 
 # Sobel
 
-part of a command-line interface (CLI) application designed to process images using the Sobel edge detection algorithm.
+a command-line interface (CLI) command  to process images using the Sobel edge detection algorithm.
 
 This command reads an input image, scales it to the desired width, converts it to grayscale, and then applies the Sobel algorithm to highlight the edges.
 
@@ -67,7 +67,7 @@ Users can choose to display the ASCII art directly in the terminal or save it to
 
 # Example
 
-This is a basic example on how to convert a sobel image to Ascii
+This is a basic example on how to convert a  image to Ascii art using sobel
 
 ```
 go run main.go sobel -i images/girl.jpg -a extended -w 120 -t 130
