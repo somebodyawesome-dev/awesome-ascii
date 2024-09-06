@@ -67,15 +67,21 @@ Users can choose to display the ASCII art directly in the terminal or save it to
 
 # Example
 
-This is a basic example on how to convert an image to Ascii
+This is a basic example on how to convert a sobel image to Ascii
 
 ```
-go run main.go sobel -i images/darkness.png -a extended -w 150 -t 200
+go run main.go sobel -i images/girl.jpg -a extended -w 120 -t 130
 ```
 
-If we apply this command on the same input this is the output
+---
 
-![sobel image](https://utfs.io/f/3797c6e7-f0ef-4a4c-a03f-133be0f8d16a-sy2xuw.png)
+- ### Before
+
+![Old image placeholder](images/dizzy.png)
+
+- ### After
+
+![after image](https://utfs.io/f/5a1236d1-c22d-41a2-a532-35a1ed3d67cd-95sqx5.png)
 
 You can find here the list of flags to manipulate the output of a Sobel image
 
