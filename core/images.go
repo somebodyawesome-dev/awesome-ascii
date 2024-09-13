@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"image"
 	"image/color"
-	"os"
 
 	"github.com/somebodyawesome-dev/awesome-ascii.git/utils"
 	"golang.org/x/image/draw"
@@ -40,17 +39,18 @@ func MapPixelsToASCII(colored bool, colorImage image.Image, img image.Gray, asci
 	bounds := img.Bounds()
 	asciiArt := ""
 	asciiSet, err := asciiType.GetAsciiChars()
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
+	var asciiChar rune
 
 	// TODO: Find work around to use parellel processing
 	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
 		for x := bounds.Min.X; x < bounds.Max.X; x++ {
 			grayColor := img.GrayAt(x, y)
 			colorPixel := colorImage.At(x, y).(color.RGBA)
-			asciiChar := asciiSet[int(grayColor.Y)*len(asciiSet)/256]
+			if err != nil {
+				asciiChar = GrayToASCII()
+			} else {
+				asciiChar = asciiSet[int(grayColor.Y)*len(asciiSet)/256]
+			}
 
 			if colored {
 				ansiColor := RGBToANSI(colorPixel.R, colorPixel.G, colorPixel.B)
@@ -69,6 +69,6 @@ func RGBToANSI(r, g, b uint8) string {
 	return fmt.Sprintf("\033[38;2;%d;%d;%dm", r, g, b)
 }
 
-func GrayToASCII(gray uint8, asciiType AsciiCharType) rune {
+func GrayToASCII() rune {
 	return '#'
 }
