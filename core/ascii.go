@@ -59,9 +59,9 @@ func (e AsciiCharType) GetAsciiChars() ([]rune, error) {
 	return nil, errors.New("invalid AsciiCharType")
 }
 
-func ConvertImageToASCII(img image.Image, newWidth uint16, asciiType AsciiCharType) string {
+func ConvertImageToASCII(colored bool, img image.Image, newWidth uint16, asciiType AsciiCharType) string {
 	scaledImage := ScaleImage(img, newWidth)
 	grayImage := ConvertToGrayscale(scaledImage)
-	asciiArt := MapPixelsToASCII(grayImage, asciiType)
+	asciiArt := MapPixelsToASCII(colored, scaledImage, grayImage, asciiType)
 	return asciiArt
 }

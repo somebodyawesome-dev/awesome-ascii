@@ -17,6 +17,7 @@ func runSurvey() {
 	var imageInput string
 	var width string
 	var asciiType string
+	var colored bool
 
 	// Define the survey prompts
 	imagePrompt := &survey.Input{
@@ -36,18 +37,23 @@ func runSurvey() {
 		Options: keys,
 	}
 
+	coloredPrompt := &survey.Confirm{
+		Message: "Do you want the image to be colored?",
+	}
+
 	// Ask the user for input
 	survey.AskOne(widthPrompt, &width)
 	survey.AskOne(imagePrompt, &imageInput)
 	survey.AskOne(asciiTypePrompt, &asciiType)
+	survey.AskOne(coloredPrompt, &colored)
 
 	// Convert the selected string back to the original type
 	asciiTypeEnum := core.AsciiCharType(asciiType)
 
-	processForm(imageInput, width, asciiTypeEnum)
+	processForm(imageInput, width, asciiTypeEnum, colored)
 }
 
-func processForm(imageInput, width string, asciiType core.AsciiCharType) {
+func processForm(imageInput, width string, asciiType core.AsciiCharType, colored bool) {
 	img, err := utils.OpenImage(imageInput)
 
 	if err != nil {
@@ -64,7 +70,7 @@ func processForm(imageInput, width string, asciiType core.AsciiCharType) {
 
 	scaledImage := core.ScaleImage(img, newWidth)
 	grayImage := core.ConvertToGrayscale(scaledImage)
-	asciiArt := core.MapPixelsToASCII(grayImage, asciiType)
+	asciiArt := core.MapPixelsToASCII(colored, scaledImage, grayImage, asciiType)
 
 	if config.OutputFile != "" {
 		utils.ToFile(asciiArt, config.OutputFile)

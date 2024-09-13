@@ -36,7 +36,7 @@ func ConvertToGrayscale(img image.Image) image.Gray {
 	return *grayImage
 }
 
-func MapPixelsToASCII(img image.Gray, asciiType AsciiCharType) string {
+func MapPixelsToASCII(colored bool, colorImage image.Image, img image.Gray, asciiType AsciiCharType) string {
 	bounds := img.Bounds()
 	asciiArt := ""
 	asciiSet, err := asciiType.GetAsciiChars()
@@ -49,11 +49,26 @@ func MapPixelsToASCII(img image.Gray, asciiType AsciiCharType) string {
 	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
 		for x := bounds.Min.X; x < bounds.Max.X; x++ {
 			grayColor := img.GrayAt(x, y)
+			colorPixel := colorImage.At(x, y).(color.RGBA)
 			asciiChar := asciiSet[int(grayColor.Y)*len(asciiSet)/256]
-			asciiArt += string(asciiChar)
+
+			if colored {
+				ansiColor := RGBToANSI(colorPixel.R, colorPixel.G, colorPixel.B)
+				asciiArt += fmt.Sprintf("%s%c%s", ansiColor, asciiChar, "\033[0m")
+			} else {
+				asciiArt += string(asciiChar)
+			}
 		}
 		asciiArt += "\n"
 	}
 
 	return asciiArt
+}
+
+func RGBToANSI(r, g, b uint8) string {
+	return fmt.Sprintf("\033[38;2;%d;%d;%dm", r, g, b)
+}
+
+func GrayToASCII(gray uint8, asciiType AsciiCharType) rune {
+	return '#'
 }
