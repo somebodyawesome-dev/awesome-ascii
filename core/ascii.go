@@ -62,6 +62,6 @@ func (e AsciiCharType) GetAsciiChars() ([]rune, error) {
 func ConvertImageToASCII(colored bool, img image.Image, newWidth uint16, asciiType AsciiCharType) string {
 	scaledImage := ScaleImage(img, newWidth)
 	grayImage := ConvertToGrayscale(scaledImage)
-	asciiArt := MapPixelsToASCII(colored, scaledImage, grayImage, asciiType)
+	asciiArt := MapPixelsToASCII(MapPixelParams{Colored: colored, ColorImage: scaledImage, Img: grayImage, AsciiType: asciiType})
 	return asciiArt
 }

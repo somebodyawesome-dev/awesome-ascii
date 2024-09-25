@@ -34,7 +34,7 @@ The command also allows for adjusting the concurrency level to optimize performa
 		}
 		scaledImage := core.ScaleImage(img, config.Width)
 		grayImage := core.ConvertToGrayscale(scaledImage)
-		asciiArt := core.MapPixelsToASCII(config.Colored, scaledImage, grayImage, config.AsciiCharType)
+		asciiArt := core.MapPixelsToASCII(core.MapPixelParams{Colored: config.Colored, ColorImage: scaledImage, Img: grayImage, AsciiType: config.AsciiCharType})
 
 		if config.OutputFile != "" {
 			utils.ToFile(asciiArt, config.OutputFile)

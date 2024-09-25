@@ -70,7 +70,7 @@ func processForm(imageInput, width string, asciiType core.AsciiCharType, colored
 
 	scaledImage := core.ScaleImage(img, newWidth)
 	grayImage := core.ConvertToGrayscale(scaledImage)
-	asciiArt := core.MapPixelsToASCII(colored, scaledImage, grayImage, asciiType)
+	asciiArt := core.MapPixelsToASCII(core.MapPixelParams{Colored: colored, ColorImage: scaledImage, Img: grayImage, AsciiType: asciiType})
 
 	if config.OutputFile != "" {
 		utils.ToFile(asciiArt, config.OutputFile)

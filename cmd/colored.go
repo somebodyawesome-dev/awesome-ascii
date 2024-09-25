@@ -32,7 +32,7 @@ var coloredCMD = &cobra.Command{
 		scaledImage := core.ScaleImage(img, width)
 		grayImage := core.ConvertToGrayscale(scaledImage)
 		//NEED to find a solution for ascii char type (make it optional)
-		asciiArt := core.MapPixelsToASCII(true, scaledImage, grayImage, nil)
+		asciiArt := core.MapPixelsToASCII(core.MapPixelParams{Colored: true, ColorImage: scaledImage, Img: grayImage})
 
 		fmt.Println(asciiArt)
 	},
