@@ -14,6 +14,7 @@ type MapPixelParams struct {
 	ColorImage image.Image
 	Img        image.Gray
 	AsciiType  AsciiCharType
+	AsciiChar  rune
 }
 
 func ScaleImage(img image.Image, newWidth uint16) image.Image {
@@ -54,7 +55,7 @@ func MapPixelsToASCII(params MapPixelParams) string {
 			grayColor := params.Img.GrayAt(x, y)
 			colorPixel := params.ColorImage.At(x, y).(color.RGBA)
 			if err != nil {
-				asciiChar = GrayToASCII()
+				asciiChar = params.AsciiChar
 			} else {
 				asciiChar = asciiSet[int(grayColor.Y)*len(asciiSet)/256]
 			}
@@ -74,8 +75,4 @@ func MapPixelsToASCII(params MapPixelParams) string {
 
 func RGBToANSI(r, g, b uint8) string {
 	return fmt.Sprintf("\033[38;2;%d;%d;%dm", r, g, b)
-}
-
-func GrayToASCII() rune {
-	return '#'
 }

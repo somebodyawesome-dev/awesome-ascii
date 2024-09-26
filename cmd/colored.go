@@ -18,7 +18,7 @@ var coloredCMD = &cobra.Command{
 	Short: "colored mode",
 	Long:  `This mode generates the images in colored mode, in which the user only have to choose what character to replace pixels with`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(char) != 1 {
+		if len([]rune(char)) != 1 {
 			fmt.Println("Error: Please provide exactly one character for the --char flag")
 			os.Exit(1)
 		}
@@ -31,8 +31,7 @@ var coloredCMD = &cobra.Command{
 		}
 		scaledImage := core.ScaleImage(img, width)
 		grayImage := core.ConvertToGrayscale(scaledImage)
-		//NEED to find a solution for ascii char type (make it optional)
-		asciiArt := core.MapPixelsToASCII(core.MapPixelParams{Colored: true, ColorImage: scaledImage, Img: grayImage})
+		asciiArt := core.MapPixelsToASCII(core.MapPixelParams{Colored: true, ColorImage: scaledImage, Img: grayImage, AsciiChar: []rune(char)[0]})
 
 		fmt.Println(asciiArt)
 	},
