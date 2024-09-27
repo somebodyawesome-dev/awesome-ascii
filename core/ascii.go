@@ -24,11 +24,11 @@ var validAsciiCharTypes = map[string]AsciiCharType{
 	"high_detail": HighDetail,
 }
 var asciiCharsMap = map[AsciiCharType][]rune{
-	Basic:      []rune("@%#*+=-:. "),
-	Binary:     []rune("01"),
-	Contrast:   []rune("@#S%?*+;:,. "),
-	Extended:   []rune("@W#98B0%Zq6x2t!i*|~-:. "),
-	HighDetail: []rune("@$B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/|()1{}[]?-_+~<>i!lI;:,\"^`'. "),
+	Basic:      []rune(" .:-=+*#%@"),
+	Binary:     []rune("10"),
+	Contrast:   []rune(" ,.:%?S#@"),
+	Extended:   []rune(" .:-~|*i!t2x6qZ%0B98W@"),
+	HighDetail: []rune(" .`'^\",:;Il!i><~+_-?[]{}1()|/tjrfxnruvcxzXYUJCLQO0Zmwqpbkdhao*#MW&8%B$@"),
 }
 
 // String is used both by fmt.Print and by Cobra in help text
