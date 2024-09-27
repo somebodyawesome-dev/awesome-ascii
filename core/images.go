@@ -4,11 +4,18 @@ import (
 	"fmt"
 	"image"
 	"image/color"
-	"os"
 
 	"github.com/somebodyawesome-dev/awesome-ascii.git/utils"
 	"golang.org/x/image/draw"
 )
+
+type MapPixelParams struct {
+	Colored    bool
+	ColorImage image.Image
+	Img        image.Gray
+	AsciiType  AsciiCharType
+	AsciiChar  rune
+}
 
 func ScaleImage(img image.Image, newWidth uint16) image.Image {
 	bounds := img.Bounds()
@@ -36,24 +43,36 @@ func ConvertToGrayscale(img image.Image) image.Gray {
 	return *grayImage
 }
 
-func MapPixelsToASCII(img image.Gray, asciiType AsciiCharType) string {
-	bounds := img.Bounds()
+func MapPixelsToASCII(params MapPixelParams) string {
+	bounds := params.Img.Bounds()
 	asciiArt := ""
-	asciiSet, err := asciiType.GetAsciiChars()
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
+	asciiSet, err := params.AsciiType.GetAsciiChars()
+	var asciiChar rune
 
 	// TODO: Find work around to use parellel processing
 	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
 		for x := bounds.Min.X; x < bounds.Max.X; x++ {
-			grayColor := img.GrayAt(x, y)
-			asciiChar := asciiSet[int(grayColor.Y)*len(asciiSet)/256]
-			asciiArt += string(asciiChar)
+			grayColor := params.Img.GrayAt(x, y)
+			colorPixel := params.ColorImage.At(x, y).(color.RGBA)
+			if err != nil {
+				asciiChar = params.AsciiChar
+			} else {
+				asciiChar = asciiSet[int(grayColor.Y)*len(asciiSet)/256]
+			}
+
+			if params.Colored {
+				ansiColor := RGBToANSI(colorPixel.R, colorPixel.G, colorPixel.B)
+				asciiArt += fmt.Sprintf("%s%c%s", ansiColor, asciiChar, "\033[0m")
+			} else {
+				asciiArt += string(asciiChar)
+			}
 		}
 		asciiArt += "\n"
 	}
 
 	return asciiArt
+}
+
+func RGBToANSI(r, g, b uint8) string {
+	return fmt.Sprintf("\033[38;2;%d;%d;%dm", r, g, b)
 }

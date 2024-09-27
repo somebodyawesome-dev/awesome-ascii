@@ -6,42 +6,43 @@ import (
 	"os"
 	"runtime"
 
-	. "github.com/somebodyawesome-dev/awesome-ascii.git/core"
+	"github.com/somebodyawesome-dev/awesome-ascii.git/config"
+	"github.com/somebodyawesome-dev/awesome-ascii.git/core"
 	"github.com/somebodyawesome-dev/awesome-ascii.git/utils"
 	"github.com/spf13/cobra"
 )
 
-var inputFile string
-var width uint16
-var asciiCharType AsciiCharType = Basic
-var outputFile string
 var concurrency int
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "awesome-ascii",
-	Short: "A image to ASCII CLI command",
-	Long:  `A command to turn image into  ASCII texts.`,
+	Short: "A command-line tool that converts images into ASCII art.",
+	Long: `a command-line interface (CLI) tool designed to transform images into ASCII text art.
+It processes an input image by scaling, converting it to grayscale, and then mapping the pixel values to ASCII characters.
+The resulting ASCII art can be output directly to the terminal or saved to a file.
+The command also allows for adjusting the concurrency level to optimize performance.`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	Run: func(cmd *cobra.Command, args []string) {
 
-		img, err := utils.OpenImage(inputFile)
+		img, err := utils.OpenImage(config.InputFile)
 
 		if err != nil {
 			log.Fatalf("Error: %v", err)
 			os.Exit(1)
 		}
-		scaledImage := ScaleImage(img, width)
-		grayImage := ConvertToGrayscale(scaledImage)
-		asciiArt := MapPixelsToASCII(grayImage, asciiCharType)
+		scaledImage := core.ScaleImage(img, config.Width)
+		grayImage := core.ConvertToGrayscale(scaledImage)
+		asciiArt := core.MapPixelsToASCII(core.MapPixelParams{Colored: config.Colored, ColorImage: scaledImage, Img: grayImage, AsciiType: config.AsciiCharType})
 
-		if outputFile != "" {
-			utils.ToFile(asciiArt, outputFile)
+		if config.OutputFile != "" {
+			utils.ToFile(asciiArt, config.OutputFile)
 		} else {
 			fmt.Println(asciiArt)
 		}
 	},
+
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		//set concurrency
 		runtime.GOMAXPROCS(concurrency)
@@ -59,17 +60,6 @@ func Execute() {
 }
 
 func init() {
-
-	rootCmd.PersistentFlags().StringVarP(&inputFile, "input", "i", "", "An image path which will be converted to ASCII")
-	rootCmd.MarkPersistentFlagRequired("input")
-
-	termSize := utils.GetTerminalSize()
-
-	rootCmd.PersistentFlags().Uint16VarP(&width, "width", "w", termSize.Col, "An image path which will be converted to ASCII")
-
-	rootCmd.PersistentFlags().VarP(&asciiCharType, "ascii-type", "a", "Determine which set of ascii characters will be used")
-
-	rootCmd.PersistentFlags().StringVarP(&outputFile, "output", "o", "", "An output path for the converted image")
-
 	rootCmd.PersistentFlags().IntVarP(&concurrency, "concurrency", "c", runtime.NumCPU(), "Set GOMAXPROCS")
+	config.InitBaseConverter(rootCmd)
 }

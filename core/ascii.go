@@ -23,7 +23,7 @@ var validAsciiCharTypes = map[string]AsciiCharType{
 	"extended":    Extended,
 	"high_detail": HighDetail,
 }
-var asciiCharsMap = map[AsciiCharType][]rune{
+var AsciiCharsMap = map[AsciiCharType][]rune{
 	Basic:      []rune(" .:-=+*#%@"),
 	Binary:     []rune("10"),
 	Contrast:   []rune(" ,.:%?S#@"),
@@ -53,15 +53,15 @@ func (e *AsciiCharType) Type() string {
 }
 
 func (e AsciiCharType) GetAsciiChars() ([]rune, error) {
-	if chars, ok := asciiCharsMap[e]; ok {
+	if chars, ok := AsciiCharsMap[e]; ok {
 		return chars, nil
 	}
 	return nil, errors.New("invalid AsciiCharType")
 }
 
-func ConvertImageToASCII(img image.Image, newWidth uint16, asciiType AsciiCharType) string {
+func ConvertImageToASCII(colored bool, img image.Image, newWidth uint16, asciiType AsciiCharType) string {
 	scaledImage := ScaleImage(img, newWidth)
 	grayImage := ConvertToGrayscale(scaledImage)
-	asciiArt := MapPixelsToASCII(grayImage, asciiType)
+	asciiArt := MapPixelsToASCII(MapPixelParams{Colored: colored, ColorImage: scaledImage, Img: grayImage, AsciiType: asciiType})
 	return asciiArt
 }

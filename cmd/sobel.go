@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/somebodyawesome-dev/awesome-ascii.git/config"
 	"github.com/somebodyawesome-dev/awesome-ascii.git/core"
 	"github.com/somebodyawesome-dev/awesome-ascii.git/utils"
 	"github.com/spf13/cobra"
@@ -12,27 +13,30 @@ import (
 // sobelCmd represents the convert command
 var sobelCmd = &cobra.Command{
 	Use:   "sobel",
-	Short: "Image to ASCII Text using Sobel filter",
-	Long:  `A CLI command to turn images to ASCII texts by grayscaling and  applying Sobel filter to the input image.`,
+	Short: "A command that applies the Sobel edge detection algorithm to images and converts the result into ASCII art.",
+	Long: `part of a command-line interface (CLI) application designed to process images using the Sobel edge detection algorithm.
+This command reads an input image, scales it to the desired width, converts it to grayscale, and then applies the Sobel algorithm to highlight the edges.
+The resulting edge-detected image is then transformed into ASCII art.
+Users can choose to display the ASCII art directly in the terminal or save it to a file.`,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		img, err := utils.OpenImage(inputFile)
+		img, err := utils.OpenImage(config.InputFile)
 
 		if err != nil {
 			fmt.Printf("rror: %v \n", err)
 			os.Exit(1)
 		}
-		scaledImage := core.ScaleImage(img, width)
+		scaledImage := core.ScaleImage(img, config.Width)
 		grayImage := core.ConvertToGrayscale(scaledImage)
 		newImg := core.ApplySobel(grayImage)
 		// asciiArt := ascii.MapPixelsToASCII(newImg.Gray, asciiCharType)
 
 		asciiArt := newImg.ApplyEgdesToAscii()
 
-		if outputFile != "" {
-			utils.ToFile(asciiArt, outputFile)
+		if config.OutputFile != "" {
+			utils.ToFile(asciiArt, config.OutputFile)
 		} else {
-			utils.ToStd(asciiArt)
+			fmt.Println(asciiArt)
 		}
 
 	},
@@ -40,5 +44,5 @@ var sobelCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(sobelCmd)
-	sobelCmd.Flags().Uint8VarP(&core.SOBEL_THRESHOLD, "threshold", "t", core.SOBEL_THRESHOLD, "Threshold between 0..255 to control intensity of assci in the edges of the image")
+	config.InitSobelConverter(sobelCmd)
 }
