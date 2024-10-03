@@ -21,3 +21,9 @@
 go.work
 go.work.sum
 .vscode
+
+#ignore images folder
+images/*
+
+#unignore brainstack image
+!images/brainstack.png
