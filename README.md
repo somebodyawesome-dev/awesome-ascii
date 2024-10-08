@@ -1,5 +1,8 @@
 # Awesome Ascii
 
+<p align="center"><a href="https://brainstack.net/"><img src="https://utfs.io/f/FrKex1QcGVZwleCCGhIHcxW3F6gl8OE1jdApqh7mVrQ4uZft" /></a></p>
+<p align="center">This project is powered by <a href="https://brainstack.net/">Brainstack</a></p>
+
 Awesome Ascii is a command-line interface (CLI) tool designed to transform images into ASCII text art.
 It processes an input image by scaling, converting it to grayscale, and then mapping the pixel values to ASCII characters.
 The resulting ASCII art can be output directly to the terminal or saved to a file.
@@ -58,7 +61,7 @@ Running the following command will open the CLI in interactive mode
 
 # Sobel
 
-a command-line interface (CLI) command  to process images using the Sobel edge detection algorithm.
+a command-line interface (CLI) command to process images using the Sobel edge detection algorithm.
 
 This command reads an input image, scales it to the desired width, converts it to grayscale, and then applies the Sobel algorithm to highlight the edges.
 
@@ -67,7 +70,7 @@ Users can choose to display the ASCII art directly in the terminal or save it to
 
 # Example
 
-This is a basic example on how to convert a  image to Ascii art using sobel
+This is a basic example on how to convert a image to Ascii art using sobel
 
 ```
 go run main.go sobel -i images/girl.jpg -a extended -w 120 -t 130
