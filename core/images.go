@@ -46,9 +46,13 @@ func ConvertToGrayscale(img image.Image) image.Gray {
 
 func MapPixelsToASCII(params MapPixelParams) string {
 	bounds := params.Img.Bounds()
-	asciiArt := make([][]string, bounds.Dy()) 
+	asciiArt := make([][]string, bounds.Dy())
 	asciiSet, err := params.AsciiType.GetAsciiChars()
 	var asciiChar rune
+	for y := range asciiArt {
+
+		asciiArt[y] = make([]string, bounds.Dx())
+	}
 
 	utils.ParallelImageProcess(bounds.Size(), func(x, y int) {
 		grayColor := params.Img.GrayAt(x, y)
@@ -58,10 +62,7 @@ func MapPixelsToASCII(params MapPixelParams) string {
 		} else {
 			asciiChar = asciiSet[int(grayColor.Y)*len(asciiSet)/256]
 		}
-		// Allocate row if not yet done (thread-safe)
-		if asciiArt[y] == nil {
-			asciiArt[y] = make([]string, bounds.Dx())
-		}
+	
 		if params.Colored {
 			ansiColor := RGBToANSI(colorPixel.R, colorPixel.G, colorPixel.B)
 			asciiArt[y][x] = fmt.Sprintf("%s%c%s", ansiColor, asciiChar, "\033[0m")
