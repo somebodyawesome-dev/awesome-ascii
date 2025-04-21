@@ -1,8 +1,5 @@
 # Awesome Ascii
 
-<p align="center"><a href="https://brainstack.net/"><img src="https://utfs.io/f/FrKex1QcGVZwleCCGhIHcxW3F6gl8OE1jdApqh7mVrQ4uZft" /></a></p>
-<p align="center">This project is powered by <a href="https://brainstack.net/">Brainstack</a></p>
-
 Awesome Ascii is a command-line interface (CLI) tool designed to transform images into ASCII text art.
 It processes an input image by scaling, converting it to grayscale, and then mapping the pixel values to ASCII characters.
 The resulting ASCII art can be output directly to the terminal or saved to a file.
